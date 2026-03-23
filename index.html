@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Abrazo que Corrió Más Rápido</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #ff9f43; /* naranja */
+    --c2: #ff6b6b; /* rojo */
+    --c3: #a29bfe; /* morado */
+    --c4: #55efc4; /* verde menta */
+    --c5: #74b9ff; /* azul */
+    --c6: #fd79a8; /* rosa */
+    --narrador: #0984e3;
+    --padre: #e67e22;
+    --hijo-menor: #ee5a24;
+    --hijo-mayor: #00b894;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f0eaf8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── FONDO ANIMADO GLOBAL ── */
+  .bg-gradient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    transition: background 1.2s ease;
+    background: linear-gradient(135deg, #f0eaf8, #ddd6f3, #e8f4fd);
+  }
+
+  .bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+    transition: all 1.4s ease;
+  }
+
+  /* ── SCROLL CONTAINER ── */
+  .story {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px 120px;
+  }
+
+  /* ── PORTADA ── */
+  .portada {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    gap: 16px;
+  }
+
+  .portada-emojis {
+    font-size: 72px;
+    letter-spacing: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+  }
+
+  .portada h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(42px, 8vw, 72px);
+    color: #3d2c6e;
+    line-height: 1.1;
+    text-shadow: 0 4px 30px rgba(100,80,180,0.2);
+  }
+
+  .portada .tag {
+    background: rgba(100,80,200,0.1);
+    border: 1px solid rgba(100,80,200,0.2);
+    border-radius: 40px;
+    padding: 10px 28px;
+    color: #5a4a9a;
+    font-size: 16px;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(80,60,140,0.5);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .scroll-hint .arrow {
+    font-size: 24px;
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ── PERSONAJES SECTION ── */
+  .section {
+    padding: 80px 0 40px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(60,40,120,0.45);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  /* ── PERSONAJES GRID ── */
+  .personajes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .pcard {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(180,160,220,0.3);
+    border-radius: 20px;
+    padding: 18px 12px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.25s ease, background 0.25s ease;
+    cursor: default;
+  }
+
+  .pcard:hover {
+    transform: translateY(-6px) scale(1.04);
+    background: rgba(255,255,255,0.75);
+  }
+
+  .pcard-emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+  .pcard-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    color: white;
+  }
+
+  /* ── ESCENA HEADER ── */
+  .escena-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 26px;
+    border-radius: 24px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .escena-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: inherit;
+  }
+
+  .escena-big-emoji {
+    font-size: 52px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+
+  .escena-info { position: relative; z-index: 1; }
+  .escena-num {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 4px;
+  }
+  .escena-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    line-height: 1.1;
+  }
+
+  /* ── BLOQUES DE DIÁLOGO ── */
+  .bloque {
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .bloque.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .bloque-inner {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .bloque-avatar {
+    font-size: 32px;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(180,160,220,0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .bloque:hover .bloque-avatar {
+    transform: scale(1.15) rotate(-5deg);
+  }
+
+  .bloque-bubble {
+    flex: 1;
+    border-radius: 6px 20px 20px 20px;
+    padding: 12px 18px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(180,160,220,0.25);
+  }
+
+  .bloque-nombre {
+    font-family: 'Fredoka One', cursive;
+    font-size: 14px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .bloque-texto {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: #2d2550;
+  }
+
+  /* Variantes por personaje */
+  .narrador .bloque-bubble {
+    background: rgba(180,220,255,0.35);
+    border-color: rgba(9, 132, 227, 0.25);
+  }
+  .narrador .bloque-nombre { color: #0666b8; }
+  .narrador .bloque-avatar { border-color: rgba(9,132,227,0.3); }
+
+  .padre .bloque-bubble {
+    background: rgba(255,220,160,0.4);
+    border-color: rgba(200,110,20,0.25);
+  }
+  .padre .bloque-nombre { color: #b35a00; }
+  .padre .bloque-avatar { border-color: rgba(200,110,20,0.3); }
+
+  .hijo-menor .bloque-bubble {
+    background: rgba(255,200,160,0.4);
+    border-color: rgba(210,80,30,0.25);
+  }
+  .hijo-menor .bloque-nombre { color: #c04010; }
+  .hijo-menor .bloque-avatar { border-color: rgba(210,80,30,0.3); }
+
+  .hijo-mayor .bloque-bubble {
+    background: rgba(180,250,220,0.4);
+    border-color: rgba(0,150,110,0.25);
+  }
+  .hijo-mayor .bloque-nombre { color: #007a5e; }
+  .hijo-mayor .bloque-avatar { border-color: rgba(0,150,110,0.3); }
+
+  /* ── EFECTO DE SONIDO ── */
+  .sfx {
+    text-align: center;
+    padding: 14px 20px;
+    margin: 10px 0 18px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 16px;
+    border: 1px dashed rgba(160,140,200,0.4);
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: #4a3a80;
+    letter-spacing: 2px;
+    transition: transform 0.2s ease;
+  }
+
+  .sfx:hover {
+    transform: scale(1.03);
+    background: rgba(255,255,255,0.7);
+  }
+
+  /* ── DIVISOR FLUIDO ── */
+  .divisor {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 56px 0 0;
+    padding-top: 20px;
+  }
+
+  .divisor-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(120,100,180,0.2), transparent);
+  }
+
+  .divisor-dot {
+    font-size: 18px;
+    opacity: 0.35;
+    letter-spacing: 6px;
+  }
+
+  /* ── FINAL ── */
+  .final-section {
+    padding: 80px 0 60px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .final-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .final-big {
+    font-size: 90px;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 8px 20px rgba(180,100,160,0.3));
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .final-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 50px;
+    color: #5a2d6e;
+    text-shadow: 0 4px 30px rgba(180,100,200,0.2);
+    margin-bottom: 32px;
+  }
+
+  .final-card {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(180,160,220,0.3);
+    border-radius: 28px;
+    padding: 32px 36px;
+    backdrop-filter: blur(16px);
+    margin: 0 auto;
+    max-width: 500px;
+  }
+
+  .final-intro {
+    color: #5a4a7a;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .final-linea {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: #3d2c6e;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(120,100,180,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .final-linea:last-child { border-bottom: none; }
+  .final-linea .ico { font-size: 28px; flex-shrink: 0; }
+
+  .final-frase {
+    margin-top: 28px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 24px;
+    color: #b35a00;
+    text-shadow: 0 2px 20px rgba(200,130,0,0.15);
+    line-height: 1.4;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 4px;
+    background: linear-gradient(to right, #ff9f43, #ff6b6b, #a29bfe);
+    z-index: 100;
+    transition: width 0.2s ease;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── TOC FLOTANTE ── */
+  .toc {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 50;
+  }
+
+  .toc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(100,80,180,0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .toc-dot:hover, .toc-dot.active {
+    background: #7c5cbf;
+    transform: scale(1.5);
+  }
+
+  .toc-dot .toc-label {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(60,40,120,0.75);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .toc-dot:hover .toc-label { opacity: 1; }
+
+  @media (max-width: 600px) { .toc { display: none; } }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    color: #3d2c6e;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 20px rgba(100,80,180,0.1);
+  }
+
+  /* floating stars background */
+  .star {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    font-size: 18px;
+    opacity: 0;
+    animation: twinkle var(--dur, 4s) var(--delay, 0s) ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 0.3; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Fondo dinámico -->
+<div class="bg-gradient" id="bgGradient"></div>
+<div class="bg-orb" id="orb1" style="width:500px;height:500px;top:-100px;left:-150px;background:#ff9f43;"></div>
+<div class="bg-orb" id="orb2" style="width:400px;height:400px;bottom:10%;right:-120px;background:#a29bfe;"></div>
+
+<!-- Barra de progreso -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navegación lateral -->
+<div class="toc" id="toc">
+  <div class="toc-dot active" data-target="portada"><span class="toc-label">Inicio</span></div>
+  <div class="toc-dot" data-target="personajes"><span class="toc-label">Personajes</span></div>
+  <div class="toc-dot" data-target="escena1"><span class="toc-label">La Decisión</span></div>
+  <div class="toc-dot" data-target="escena2"><span class="toc-label">Fiesta Sin Freno</span></div>
+  <div class="toc-dot" data-target="escena3"><span class="toc-label">Entre Cerditos</span></div>
+  <div class="toc-dot" data-target="escena4"><span class="toc-label">El Padre Vigilante</span></div>
+  <div class="toc-dot" data-target="escena5"><span class="toc-label">El Hermano Mayor</span></div>
+  <div class="toc-dot" data-target="final"><span class="toc-label">Final ✨</span></div>
+</div>
+
+<!-- Estrellitas flotantes -->
+<div id="stars"></div>
+
+<div class="story">
+
+  <!-- ═══ PORTADA ═══ -->
+  <section class="portada" id="portada">
+    <svg width="260" height="120" viewBox="0 0 260 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:4px;">
+      <!-- Suelo -->
+      <ellipse cx="130" cy="112" rx="100" ry="6" fill="#e0d0f0" opacity="0.5"/>
+
+      <!-- ═══ PAPÁ (izquierda, corriendo hacia la derecha) ═══ -->
+      <!-- Cabeza -->
+      <circle cx="52" cy="22" r="12" fill="#c084d0" opacity="0.85"/>
+      <!-- Cuerpo -->
+      <path d="M52 34 Q48 55 44 72" stroke="#c084d0" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+      <!-- Brazos abiertos hacia adelante -->
+      <path d="M50 42 Q38 36 30 30" stroke="#c084d0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M54 40 Q68 46 78 50" stroke="#c084d0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <!-- Piernas corriendo -->
+      <path d="M44 72 Q38 88 30 100" stroke="#c084d0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M44 72 Q52 88 58 100" stroke="#c084d0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+
+
+      <!-- ═══ LÍNEA DE MOVIMIENTO ═══ -->
+      <path d="M85 60 Q100 55 115 58" stroke="#e0c8f0" stroke-width="2.5" stroke-dasharray="5 4" stroke-linecap="round" opacity="0.6"/>
+      <!-- Corazón central flotando -->
+      <path d="M126 44 C126 40 120 36 116 40 C112 44 116 50 126 58 C136 50 140 44 136 40 C132 36 126 40 126 44 Z" fill="#f4a8d0" opacity="0.8"/>
+
+      <!-- ═══ HIJO (derecha, brazos abiertos) ═══ -->
+      <!-- Cabeza -->
+      <circle cx="200" cy="30" r="10" fill="#a0c8f0" opacity="0.85"/>
+      <!-- Cuerpo -->
+      <path d="M200 40 Q200 60 200 76" stroke="#a0c8f0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <!-- Brazos abiertos esperando -->
+      <path d="M200 48 Q182 42 170 36" stroke="#a0c8f0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M200 48 Q218 42 228 36" stroke="#a0c8f0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <!-- Piernas -->
+      <path d="M200 76 Q194 92 188 106" stroke="#a0c8f0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M200 76 Q206 92 212 106" stroke="#a0c8f0" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+
+      <!-- Destellos alrededor -->
+      <circle cx="90" cy="30" r="3" fill="#f4a8d0" opacity="0.5"/>
+      <circle cx="160" cy="20" r="2" fill="#c084d0" opacity="0.4"/>
+      <circle cx="240" cy="60" r="3" fill="#a0c8f0" opacity="0.5"/>
+      <circle cx="20" cy="80" r="2" fill="#f4a8d0" opacity="0.35"/>
+    </svg>
+    <h1>El abrazo que<br>corrió más rápido</h1>
+    <div class="tag">✦ Un guión de teatro para niños ✦</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:#9b7ab8;opacity:0.75;font-style:italic;margin-top:4px;">Una historia de Lucas 15</div>
+
+  </section>
+
+  <!-- ═══ PERSONAJES ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="personajes">
+    <div class="section-label">Antes de empezar</div>
+    <div class="section-title">Los Personajes 👥</div>
+    <div class="personajes-grid">
+      <div class="pcard">
+        <span class="pcard-emoji">🎙️</span>
+        <div class="pcard-name" style="color:#74b9ff;">Narrador</div>
+      </div>
+      <div class="pcard">
+        <span class="pcard-emoji">👴</span>
+        <div class="pcard-name" style="color:#fdcb6e;">El Padre</div>
+      </div>
+      <div class="pcard">
+        <span class="pcard-emoji">🧒</span>
+        <div class="pcard-name" style="color:#ff9f43;">Hijo Menor</div>
+      </div>
+      <div class="pcard">
+        <span class="pcard-emoji">🧔</span>
+        <div class="pcard-name" style="color:#55efc4;">Hijo Mayor</div>
+      </div>
+      <div class="pcard">
+        <span class="pcard-emoji">🛎️</span>
+        <div class="pcard-name" style="color:#a29bfe;">Sirviente</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ESCENA 1 ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="escena1">
+    <div class="section-label">Escena 1</div>
+    <div class="escena-header" style="background:linear-gradient(135deg,#fd9644,#e67e22);">
+      <div class="escena-big-emoji">🏡</div>
+      <div class="escena-info">
+        <div class="escena-num">Escena 1</div>
+        <div class="escena-titulo">La Decisión</div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">En una casa rodeada de campos verdes vivía un padre bueno con sus dos hijos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Las ovejas decían…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfx">🐑 &nbsp; ¡Beeeee! &nbsp; 🐑</div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Y las gallinas discutían como si estuvieran en una reunión muy importante.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque hijo-menor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧒</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Menor</div>
+          <div class="bloque-texto">Papá… dame mi parte de la herencia. ¡Quiero irme a conocer el mundo!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque padre">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">👴</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Padre</div>
+          <div class="bloque-texto">Hijo…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">El padre estaba triste… pero lo amaba tanto que le dio su parte.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ESCENA 2 ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="escena2">
+    <div class="section-label">Escena 2</div>
+    <div class="escena-header" style="background:linear-gradient(135deg,#ff6b6b,#ee5a24);">
+      <div class="escena-big-emoji">🎉</div>
+      <div class="escena-info">
+        <div class="escena-num">Escena 2</div>
+        <div class="escena-titulo">Fiesta Sin Freno</div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">El hijo menor se fue lejos. ¡Muy lejos! Y al principio…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque hijo-menor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧒</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Menor</div>
+          <div class="bloque-texto">¡¡Yo invito!! ¡¡Coman!! ¡¡Bailen!!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Pero el dinero no es infinito. La bolsa empezó a sonar así:</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfx">💸 &nbsp; fshhhhh… &nbsp; 💸</div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Y cuando el dinero se fue… los amigos también se fueron.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ESCENA 3 ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="escena3">
+    <div class="section-label">Escena 3</div>
+    <div class="escena-header" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7);">
+      <div class="escena-big-emoji">🐷</div>
+      <div class="escena-info">
+        <div class="escena-num">Escena 3</div>
+        <div class="escena-titulo">Entre Cerditos</div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Llegó hambre al país. Y el joven terminó cuidando… ¡cerdos!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfx">🐷 &nbsp; ¡Oink! ¡Oink! &nbsp; 🐷</div>
+
+    <div class="bloque hijo-menor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧒</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Menor</div>
+          <div class="bloque-texto">Tengo tanta hambre que… esa comida de cerdo… casi se ve deliciosa…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Entonces recordó su hogar.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque hijo-menor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧒</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Menor</div>
+          <div class="bloque-texto">En casa de mi padre hay pan de sobra… Volveré. Le diré que he pecado… que no soy digno…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ESCENA 4 ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="escena4">
+    <div class="section-label">Escena 4</div>
+    <div class="escena-header" style="background:linear-gradient(135deg,#55efc4,#00b894);">
+      <div class="escena-big-emoji">👀</div>
+      <div class="escena-info">
+        <div class="escena-num">Escena 4</div>
+        <div class="escena-titulo">El Padre Vigilante</div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Mientras tanto, el padre salía todos los días a mirar el horizonte.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">Un día… ¡lo vio!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque padre">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">👴</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Padre</div>
+          <div class="bloque-texto">¡¡Es mi hijo!!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfx">🏃💨 &nbsp; ¡¡Y corrió!! &nbsp; 💨🏃</div>
+
+    <div class="bloque narrador">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🎙️</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Narrador</div>
+          <div class="bloque-texto">El hijo empezó su discurso.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque hijo-menor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧒</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Menor</div>
+          <div class="bloque-texto">Padre, he pecado contra el cielo y contra ti…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque padre">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">👴</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Padre</div>
+          <div class="bloque-texto">¡Traigan el mejor vestido! ¡Un anillo! ¡Sandalias! ¡Mi hijo estaba perdido y ha vuelto!</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ESCENA 5 ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="section" id="escena5">
+    <div class="section-label">Escena 5</div>
+    <div class="escena-header" style="background:linear-gradient(135deg,#74b9ff,#0984e3);">
+      <div class="escena-big-emoji">😤</div>
+      <div class="escena-info">
+        <div class="escena-num">Escena 5</div>
+        <div class="escena-titulo">El Hermano Mayor</div>
+      </div>
+    </div>
+
+    <div class="bloque hijo-mayor">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">🧔</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Hijo Mayor</div>
+          <div class="bloque-texto">Yo siempre he estado aquí… y nunca hiciste fiesta para mí.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque padre">
+      <div class="bloque-inner">
+        <div class="bloque-avatar">👴</div>
+        <div class="bloque-bubble">
+          <div class="bloque-nombre">Padre</div>
+          <div class="bloque-texto">Hijo, tú siempre estás conmigo. Todo lo mío es tuyo. Pero tu hermano estaba perdido… y ahora volvió.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FINAL ═══ -->
+  <div class="divisor"><div class="divisor-line"></div><div class="divisor-dot">✦ ✦ ✦</div><div class="divisor-line"></div></div>
+  <section class="final-section" id="final">
+    <span class="final-big">🤗</span>
+    <div class="final-title">✨ Final ✨</div>
+    <div class="final-card">
+      <div class="final-intro">
+        Esta historia la contó Jesús de Nazaret<br>para enseñarnos algo muy importante.
+      </div>
+      <div class="final-linea">
+        <span class="ico">👴</span>
+        <span>Dios es como ese padre.</span>
+      </div>
+      <div class="final-linea">
+        <span class="ico">🚫</span>
+        <span>No se queda sentado.</span>
+      </div>
+      <div class="final-linea">
+        <span class="ico">🙅</span>
+        <span>No cruza los brazos.</span>
+      </div>
+      <div class="final-linea">
+        <span class="ico">🏃</span>
+        <span>¡Corre!</span>
+      </div>
+      <div class="final-frase">
+        "Y su abrazo… es más fuerte<br>que cualquier error." 💛
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ── Estrellas flotantes ──
+  const starsEl = document.getElementById('stars');
+  const starChars = ['·', '•', '∙', '⋅'];
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.textContent = starChars[Math.floor(Math.random() * starChars.length)];
+    s.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      top: ${Math.random() * 100}vh;
+      --dur: ${5 + Math.random() * 5}s;
+      --delay: ${Math.random() * 6}s;
+      font-size: ${14 + Math.random() * 14}px;
+      color: rgba(100,80,180,0.4);
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // ── Fondo dinámico por sección ──
+  const bgGradient = document.getElementById('bgGradient');
+  const orb1 = document.getElementById('orb1');
+  const orb2 = document.getElementById('orb2');
+
+  const sectionBgs = {
+    portada:    { bg: 'linear-gradient(135deg,#f0eaf8,#ddd6f3,#e8f4fd)', o1: '#c9aaee', o2: '#aad4f5' },
+    personajes: { bg: 'linear-gradient(135deg,#eaf4ff,#d6e8ff,#f0eaff)', o1: '#aac8f5', o2: '#d4b8f0' },
+    escena1:    { bg: 'linear-gradient(135deg,#fff4e6,#ffe8cc,#fff0d6)', o1: '#ffc87a', o2: '#ffb347' },
+    escena2:    { bg: 'linear-gradient(135deg,#fff0f0,#ffd6d6,#ffe8e8)', o1: '#ffaaaa', o2: '#ff8a80' },
+    escena3:    { bg: 'linear-gradient(135deg,#f0eaff,#e4d8ff,#ede8ff)', o1: '#c8b0f5', o2: '#b09ae8' },
+    escena4:    { bg: 'linear-gradient(135deg,#e8fff6,#ccf5e4,#d8fff0)', o1: '#88e8c0', o2: '#60d4a8' },
+    escena5:    { bg: 'linear-gradient(135deg,#e8f4ff,#cce4ff,#d8ecff)', o1: '#88c4f5', o2: '#60aae8' },
+    final:      { bg: 'linear-gradient(135deg,#ffeaf4,#ffd6ea,#fff0f8)', o1: '#f5aad0', o2: '#ffd080' },
+  };
+
+  function applyBg(id) {
+    const cfg = sectionBgs[id] || sectionBgs.portada;
+    bgGradient.style.background = cfg.bg;
+    orb1.style.background = cfg.o1;
+    orb2.style.background = cfg.o2;
+  }
+
+  // ── Intersection Observer: fade-in sections + active TOC ──
+  const sections = document.querySelectorAll('.section, .final-section, .portada');
+  const tocDots  = document.querySelectorAll('.toc-dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const id = entry.target.id;
+        applyBg(id);
+        tocDots.forEach(d => {
+          d.classList.toggle('active', d.dataset.target === id);
+        });
+        // Animate child bloques with stagger
+        const bloques = entry.target.querySelectorAll('.bloque:not(.visible)');
+        bloques.forEach((b, i) => {
+          setTimeout(() => b.classList.add('visible'), i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // ── Progress bar ──
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (scrolled / total * 100) + '%';
+  }, { passive: true });
+
+  // ── TOC click navigation ──
+  tocDots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const target = document.getElementById(dot.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ── SFX hover bounce ──
+  document.querySelectorAll('.sfx').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      el.style.transform = 'scale(1.05) rotate(-1deg)';
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+</script>
+</body>
+</html>
